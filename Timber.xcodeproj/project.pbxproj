@@ -14,7 +14,6 @@
 		92744CE51868A1A400ABA9B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 92744CE41868A1A400ABA9B7 /* main.m */; };
 		92744CE91868A1A400ABA9B7 /* CBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 92744CE81868A1A400ABA9B7 /* CBAppDelegate.m */; };
 		92744CEC1868A1A400ABA9B7 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92744CEA1868A1A400ABA9B7 /* Main_iPhone.storyboard */; };
-		92744CEF1868A1A400ABA9B7 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92744CED1868A1A400ABA9B7 /* Main_iPad.storyboard */; };
 		92744CF21868A1A400ABA9B7 /* CBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92744CF11868A1A400ABA9B7 /* CBViewController.m */; };
 		92744CF41868A1A400ABA9B7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92744CF31868A1A400ABA9B7 /* Images.xcassets */; };
 		92744CFB1868A1A400ABA9B7 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92744CFA1868A1A400ABA9B7 /* XCTest.framework */; };
@@ -22,6 +21,7 @@
 		92744CFD1868A1A400ABA9B7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92744CDC1868A1A400ABA9B7 /* UIKit.framework */; };
 		92744D051868A1A400ABA9B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92744D031868A1A400ABA9B7 /* InfoPlist.strings */; };
 		92744D071868A1A400ABA9B7 /* TimberTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 92744D061868A1A400ABA9B7 /* TimberTests.m */; };
+		92744D121868A1DD00ABA9B7 /* CBTimber.m in Sources */ = {isa = PBXBuildFile; fileRef = 92744D111868A1DD00ABA9B7 /* CBTimber.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +46,6 @@
 		92744CE71868A1A400ABA9B7 /* CBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBAppDelegate.h; sourceTree = "<group>"; };
 		92744CE81868A1A400ABA9B7 /* CBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBAppDelegate.m; sourceTree = "<group>"; };
 		92744CEB1868A1A400ABA9B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		92744CEE1868A1A400ABA9B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		92744CF01868A1A400ABA9B7 /* CBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBViewController.h; sourceTree = "<group>"; };
 		92744CF11868A1A400ABA9B7 /* CBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBViewController.m; sourceTree = "<group>"; };
 		92744CF31868A1A400ABA9B7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -55,6 +54,8 @@
 		92744D021868A1A400ABA9B7 /* TimberTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TimberTests-Info.plist"; sourceTree = "<group>"; };
 		92744D041868A1A400ABA9B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		92744D061868A1A400ABA9B7 /* TimberTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimberTests.m; sourceTree = "<group>"; };
+		92744D101868A1DD00ABA9B7 /* CBTimber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBTimber.h; path = Classes/CBTimber/CBTimber.h; sourceTree = "<group>"; };
+		92744D111868A1DD00ABA9B7 /* CBTimber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBTimber.m; path = Classes/CBTimber/CBTimber.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,9 +118,9 @@
 				92744CE71868A1A400ABA9B7 /* CBAppDelegate.h */,
 				92744CE81868A1A400ABA9B7 /* CBAppDelegate.m */,
 				92744CEA1868A1A400ABA9B7 /* Main_iPhone.storyboard */,
-				92744CED1868A1A400ABA9B7 /* Main_iPad.storyboard */,
 				92744CF01868A1A400ABA9B7 /* CBViewController.h */,
 				92744CF11868A1A400ABA9B7 /* CBViewController.m */,
+				92744D131868A1E200ABA9B7 /* Logger */,
 				92744CF31868A1A400ABA9B7 /* Images.xcassets */,
 				92744CDF1868A1A400ABA9B7 /* Supporting Files */,
 			);
@@ -153,6 +154,15 @@
 				92744D031868A1A400ABA9B7 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		92744D131868A1E200ABA9B7 /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				92744D101868A1DD00ABA9B7 /* CBTimber.h */,
+				92744D111868A1DD00ABA9B7 /* CBTimber.m */,
+			);
+			name = Logger;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,7 +242,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92744CEF1868A1A400ABA9B7 /* Main_iPad.storyboard in Resources */,
 				92744CF41868A1A400ABA9B7 /* Images.xcassets in Resources */,
 				92744CEC1868A1A400ABA9B7 /* Main_iPhone.storyboard in Resources */,
 				92744CE31868A1A400ABA9B7 /* InfoPlist.strings in Resources */,
@@ -255,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92744CE51868A1A400ABA9B7 /* main.m in Sources */,
+				92744D121868A1DD00ABA9B7 /* CBTimber.m in Sources */,
 				92744CE91868A1A400ABA9B7 /* CBAppDelegate.m in Sources */,
 				92744CF21868A1A400ABA9B7 /* CBViewController.m in Sources */,
 			);
@@ -293,14 +303,6 @@
 				92744CEB1868A1A400ABA9B7 /* Base */,
 			);
 			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		92744CED1868A1A400ABA9B7 /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				92744CEE1868A1A400ABA9B7 /* Base */,
-			);
-			name = Main_iPad.storyboard;
 			sourceTree = "<group>";
 		};
 		92744D031868A1A400ABA9B7 /* InfoPlist.strings */ = {
@@ -397,6 +399,7 @@
 				GCC_PREFIX_HEADER = "Timber/Timber-Prefix.pch";
 				INFOPLIST_FILE = "Timber/Timber-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -410,6 +413,7 @@
 				GCC_PREFIX_HEADER = "Timber/Timber-Prefix.pch";
 				INFOPLIST_FILE = "Timber/Timber-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
