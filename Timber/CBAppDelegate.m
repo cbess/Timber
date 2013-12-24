@@ -12,6 +12,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [CBTimber setLogTag:@"test" forUsername:nil];
+    
     // Override point for customization after application launch.
     return YES;
 }

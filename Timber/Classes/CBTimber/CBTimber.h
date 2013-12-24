@@ -96,15 +96,25 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 
 #pragma mark - Log Class
 
+@protocol CBTimberLogMachine;
+
 /**
  Represents timber logging functionality.
  */
 @interface CBTimber : NSObject
 
+#pragma mark Log Machines
+
+- (void)addLogMachine:(id<CBTimberLogMachine>)machine;
+- (void)removeLogMachineWithIdentifier:(NSString *)identifier;
+- (void)removeLogMachine:(id<CBTimberLogMachine>)machine;
+
+#pragma mark Configure
+
 /**
  Sets the log tag.
  @param tag The regular expression pattern the tag must match (case insensitive).
- @param username The username (home folder name) of the user/dev this log tag applies to.
+ @param username The username (home folder name) of the user/dev this log tag applies to. Pass nil to ignore the username.
  @discussion If non-nil, it will filter the logs to only log matching tags.
  */
 + (void)setLogTag:(NSString *)tag forUsername:(NSString *)username;
@@ -114,12 +124,14 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 /**
  Sets the log function/method name.
  @param functionName The regular expression pattern the function or method name must match to be logged (case insensitive).
- @param username The username (home folder name) of the user/dev this log tag applies to.
+ @param username The username (home folder name) of the user/dev this log tag applies to. Pass nil to ignore the username.
  @discussion If non-nil, it will filter the logs to only log matching names.
  */
 + (void)setLogFunctionName:(NSString *)functionName forUsername:(NSString *)username;
 + (void)setLogFunctionName:(NSString *)functionName;
 + (NSString *)logFunctionName;
+
+#pragma mark Logging
 
 /**
  Logs the specified meta data for the given message.
@@ -143,5 +155,23 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
                 line:(int)line
               format:(NSString *)format
                 args:(va_list)argList;
+
+@end
+
+/**
+ Represents an object that processes logs.
+ */
+@protocol CBTimberLogMachine <NSObject>
+
+/**
+ Name of the receiver.
+ */
+- (NSString *)name;
+
+/**
+ The identifier for the receiver.
+ @discussion Should be in the form of a FQDN (domain). Example: com.cbess.logger
+ */
+- (NSString *)identifier;
 
 @end

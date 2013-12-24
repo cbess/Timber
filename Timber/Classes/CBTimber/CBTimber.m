@@ -41,6 +41,23 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 
 @implementation CBTimber
 
+#pragma mark - Log Machines
+
+- (void)addLogMachine:(id<CBTimberLogMachine>)machine
+{
+    
+}
+
+- (void)removeLogMachine:(id<CBTimberLogMachine>)machine
+{
+    
+}
+
+- (void)removeLogMachineWithIdentifier:(NSString *)identifier
+{
+    
+}
+
 #pragma mark - Config
 
 + (void)setLogRegexWithPattern:(NSString *)pattern forUsername:(NSString *)username block:(void(^)(id regex))regexBlock
