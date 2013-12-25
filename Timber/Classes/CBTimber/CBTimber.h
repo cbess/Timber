@@ -30,10 +30,24 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 #pragma mark - Constants
 
 /**
- Provides the message format for log output.
- @discussion Format allows: @line, @func, @message, @level, @file
+ Provides the message format for log output. Set to [NSNull null] to remove the formatter and use the default.
+ @discussion Only one can be provided.
+ @see CBTimberLogFormatter protocol
  */
-//static NSString *const kCBTimberLogOptionFormatKey = @"log-format";
+extern NSString *const kCBTimberLogOptionFormatterKey;
+/**
+ The username to be applied to the tag and function name options.
+ @discussion Must be provided each time the tag or function name options are set, if needed.
+ */
+extern NSString *const kCBTimberLogOptionUsernameKey;
+/**
+ The log tag to set.
+ */
+extern NSString *const kCBTimberLogOptionTagKey;
+/**
+ The log function name to set.
+ */
+extern NSString *const kCBTimberLogOptionFunctionNameKey;
 
 /**
  The log level that will be logged. Logs the set level and higher.
@@ -100,16 +114,23 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 
 /**
  Represents timber logging functionality.
+ @dicussion Intializing this class does nothing useful.
  */
 @interface CBTimber : NSObject
 
 #pragma mark Log Machines
 
-- (void)addLogMachine:(id<CBTimberLogMachine>)machine;
-- (void)removeLogMachineWithIdentifier:(NSString *)identifier;
-- (void)removeLogMachine:(id<CBTimberLogMachine>)machine;
++ (void)addLogMachine:(id<CBTimberLogMachine>)machine;
++ (void)removeLogMachine:(id<CBTimberLogMachine>)machine;
++ (void)removeLogMachineWithIdentifier:(NSString *)identifier;
 
 #pragma mark Configure
+
+/**
+ Sets the log options.
+ @disucssion Use kCBTimberLogOption* key constants.
+ */
++ (void)setLogOptions:(NSDictionary *)options;
 
 /**
  Sets the log tag.
@@ -122,6 +143,14 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 + (NSString *)logTag;
 
 /**
+ A boolean value indicating if the receiver will log the specified tag.
+ @param tag A regular expression pattern.
+ @discussion A valid value is returned once the log tag has been set.
+ @return NO, if the specified tag will not be logged, otherwise YES is returned.
+ */
++ (BOOL)canLogWithTag:(NSString *)tag;
+
+/**
  Sets the log function/method name.
  @param functionName The regular expression pattern the function or method name must match to be logged (case insensitive).
  @param username The username (home folder name) of the user/dev this log tag applies to. Pass nil to ignore the username.
@@ -130,6 +159,21 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
 + (void)setLogFunctionName:(NSString *)functionName forUsername:(NSString *)username;
 + (void)setLogFunctionName:(NSString *)functionName;
 + (NSString *)logFunctionName;
+
+/**
+ A boolean value indicating if the receiver will log from the specified function/method name.
+ @param name A regular expression pattern.
+ @discussion A valid value is returned once the log function has been set. Otherwise YES is returned.
+ @return NO, if the specified tag will not be logged, otherwise YES is returned.
+ */
++ (BOOL)canLogWithFunction:(NSString *)name;
+
+/**
+ Set to enable or disable the default log machine.
+ @discussion Usually useful when you provide one or more custom log machines.
+ */
++ (void)setDefaultLogMachineEnabled:(BOOL)enabled;
++ (BOOL)defaultLogMachineEnabled;
 
 #pragma mark Logging
 
@@ -154,24 +198,62 @@ extern BOOL CBTIsCurrentUsername(NSString *username);
             function:(const char *)function
                 line:(int)line
               format:(NSString *)format
-                args:(va_list)argList;
+                args:(va_list)args;
 
 @end
 
-/**
- Represents an object that processes logs.
- */
-@protocol CBTimberLogMachine <NSObject>
+#pragma mark - Log Machine Protocol
 
 /**
- Name of the receiver.
+ Represents an object that handles logs.
  */
-- (NSString *)name;
+@protocol CBTimberLogMachine <NSObject>
 
 /**
  The identifier for the receiver.
  @discussion Should be in the form of a FQDN (domain). Example: com.cbess.logger
  */
 - (NSString *)identifier;
+
+/**
+ A boolean value indicating if the default log machine should be skipped.
+ @discussion This assumes that the log message is handled. This will also persist for the
+ current log message. Meaning, once a skip is initiated it cannot be revoked.
+ @return YES if the default log machine will ignore the message, NO (the default), to allow the
+ default log machine to handle the log.
+ */
+- (BOOL)skipDefaultLogMachine;
+
+/**
+ A boolean value indicating if the reciever can handle the tag and function name associated with the log.
+ @discussion If NO is returned then it will not be given an opportunity to skip the default log machine.
+ */
+- (BOOL)canLogWithTag:(NSString *)tag functionName:(NSString *)functionName;
+
+/**
+ Handle the given log data.
+ */
+- (void)logWithMessage:(NSString *)message
+                 level:(NSUInteger)level
+                   tag:(NSString *)tag
+                  file:(const char *)file
+              function:(const char *)function
+                  line:(int)line;
+
+@optional
+
+- (void)didAddLogMachine;
+- (void)didRemoveLogMachine;
+
+@end
+
+#pragma mark - Log Formatter Protocol
+
+/**
+ Represents an object that handles log formatting.
+ */
+@protocol CBTimberLogFormatter <NSObject>
+
+- (NSString *)logMessageStringWithMessage:(NSString *)message tag:(NSString *)tag level:(NSUInteger)level file:(const char *)file function:(const char *)function line:(int)line;
 
 @end

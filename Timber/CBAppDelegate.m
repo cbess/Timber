@@ -12,7 +12,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [CBTimber setLogTag:@"test" forUsername:nil];
+//    [CBTimber setLogTag:@"test" forUsername:@"christopher.bess"];
+//    [CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any specified by a username
     
     // Override point for customization after application launch.
     return YES;

@@ -8,6 +8,11 @@
 
 #import "CBTimber.h"
 
+NSString *const kCBTimberLogOptionFormatterKey = @"log.formatter";
+NSString *const kCBTimberLogOptionUsernameKey = @"log.username";
+NSString *const kCBTimberLogOptionTagKey = @"log.tag";
+NSString *const kCBTimberLogOptionFunctionNameKey = @"log.function";
+
 BOOL CBTIsCurrentUsername(NSString *username)
 {
 #ifndef DEBUG
@@ -38,29 +43,82 @@ void CBTLogMessage(NSString *message)
 
 static NSRegularExpression *gLogTagRegex = nil;
 static NSRegularExpression *gLogFunctionNameRegex = nil;
+static NSMutableDictionary *gLogMachines = nil;
+static id<CBTimberLogFormatter> gLogFormatter = nil;
+static BOOL gDefaultLogMachineEnabled = YES;
 
 @implementation CBTimber
 
++ (void)initialize
+{
+    gLogMachines = [NSMutableDictionary new];
+}
+
 #pragma mark - Log Machines
 
-- (void)addLogMachine:(id<CBTimberLogMachine>)machine
++ (void)addLogMachine:(id<CBTimberLogMachine>)machine
 {
+    NSString *identifier = [machine identifier];
+    if (gLogMachines[identifier])
+        return;
     
+    if ([machine respondsToSelector:@selector(didAddLogMachine)])
+        [machine didAddLogMachine];
+    
+    gLogMachines[identifier] = machine;
 }
 
-- (void)removeLogMachine:(id<CBTimberLogMachine>)machine
++ (void)removeLogMachine:(id<CBTimberLogMachine>)machine
 {
+    if ([machine respondsToSelector:@selector(didRemoveLogMachine)])
+        [machine didRemoveLogMachine];
     
+    [gLogMachines removeObjectForKey:[machine identifier]];
 }
 
-- (void)removeLogMachineWithIdentifier:(NSString *)identifier
++ (void)removeLogMachineWithIdentifier:(NSString *)identifier
 {
-    
+    id<CBTimberLogMachine> machine = gLogMachines[identifier];
+    [self removeLogMachine:machine];
 }
 
 #pragma mark - Config
 
-+ (void)setLogRegexWithPattern:(NSString *)pattern forUsername:(NSString *)username block:(void(^)(id regex))regexBlock
++ (void)setLogOptions:(NSDictionary *)options
+{
+    NSString *username = options[kCBTimberLogOptionUsernameKey];
+    
+    if (options[kCBTimberLogOptionTagKey])
+    {
+        [self setLogTag:options[kCBTimberLogOptionTagKey] forUsername:username];
+    }
+    
+    if (options[kCBTimberLogOptionFunctionNameKey])
+    {
+        [self setLogFunctionName:options[kCBTimberLogOptionFunctionNameKey] forUsername:username];
+    }
+    
+    id formatter = options[kCBTimberLogOptionFormatterKey];
+    if (formatter)
+    {
+        if (formatter != [NSNull null])
+            gLogFormatter = formatter;
+        else
+            gLogFormatter = nil;
+    }
+}
+
++ (BOOL)defaultLogMachineEnabled
+{
+    return gDefaultLogMachineEnabled;
+}
+
++ (void)setDefaultLogMachineEnabled:(BOOL)enabled
+{
+    gDefaultLogMachineEnabled = enabled;
+}
+
++ (void)setLogRegexWithPattern:(NSString *)pattern forUsername:(NSString *)username block:(void(^)(NSRegularExpression *regex))regexBlock
 {
     if (username.length && !CBTIsCurrentUsername(username))
     {
@@ -98,7 +156,7 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 
 + (void)setLogFunctionName:(NSString *)functionName forUsername:(NSString *)username
 {
-    [self setLogRegexWithPattern:functionName forUsername:username block:^(id regex) {
+    [self setLogRegexWithPattern:functionName forUsername:username block:^(NSRegularExpression *regex) {
         if (regex)
         {
             gLogFunctionNameRegex = regex;
@@ -121,7 +179,7 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 
 + (void)setLogTag:(NSString *)tag forUsername:(NSString *)username
 {
-    [self setLogRegexWithPattern:tag forUsername:username block:^(id regex) {
+    [self setLogRegexWithPattern:tag forUsername:username block:^(NSRegularExpression *regex) {
         if (regex)
         {
             gLogTagRegex = regex;
@@ -137,8 +195,42 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 
 #pragma mark - Misc
 
++ (NSString *)nameForLogLevel:(CBTimberLogLevel)level
+{
+    NSString *levelName = [NSString string];
+    switch (level)
+    {
+        case CBTimberLogLevelVerbose:
+            break;
+            
+        case CBTimberLogLevelDebug:
+            levelName = @"debug";
+            break;
+            
+        case CBTimberLogLevelInfo:
+            levelName = @"info";
+            break;
+            
+        case CBTimberLogLevelWarn:
+            levelName = @"*Warning*";
+            break;
+            
+        case CBTimberLogLevelError:
+            levelName = @"!!ERROR!!";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return levelName;
+}
+
 + (BOOL)canLogWithTag:(NSString *)tag
 {
+    if (!gLogTagRegex)
+        return YES;
+    
     if ([gLogTagRegex numberOfMatchesInString:tag options:0 range:NSMakeRange(0, tag.length)])
         return YES;
     
@@ -147,6 +239,9 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 
 + (BOOL)canLogWithFunction:(NSString *)name
 {
+    if (!gLogFunctionNameRegex)
+        return YES;
+    
     if ([gLogFunctionNameRegex numberOfMatchesInString:name options:0 range:NSMakeRange(0, name.length)])
         return YES;
     
@@ -187,38 +282,55 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
     return YES;
 }
 
-+ (NSString *)logMessageStringUsingOptionsWithMessage:(NSString *)message level:(int)level file:(const char *)file function:(const char *)function line:(int)line
++ (NSString *)logMessageStringUsingOptionsWithMessage:(NSString *)message tag:(NSString *)tag level:(NSUInteger)level file:(const char *)file function:(const char *)function line:(int)line
 {
-    NSString *levelName = [NSString string];
-    switch (level)
+    if (gLogFormatter)
     {
-        case CBTimberLogLevelVerbose:
-            break;
-            
-        case CBTimberLogLevelDebug:
-            levelName = @"debug";
-            break;
-            
-        case CBTimberLogLevelInfo:
-            levelName = @"info";
-            break;
-            
-        case CBTimberLogLevelWarn:
-            levelName = @"*Warning*";
-            break;
-            
-        case CBTimberLogLevelError:
-            levelName = @"!!ERROR!!";
-            break;
-            
-        default:
-            break;
+        // use provided formatter and skip the default one
+        return [gLogFormatter logMessageStringWithMessage:message
+                                                      tag:tag
+                                                    level:level
+                                                     file:file
+                                                 function:function
+                                                     line:line];
     }
     
+    NSString *levelName = [self nameForLogLevel:level];
     return [NSString stringWithFormat:@"%@: %s:%d %@", levelName, function, line, message];
 }
 
 #pragma mark - Log
+
++ (void)runLogMachinesWithLogMessage:(NSString *)message tag:(NSString *)tag level:(NSUInteger)level file:(const char *)file function:(const char *)function line:(int)line
+{
+    NSString *logMessage = [self logMessageStringUsingOptionsWithMessage:message
+                                                                     tag:tag
+                                                                   level:level
+                                                                    file:file
+                                                                function:function
+                                                                    line:line];
+    BOOL skipDefaultLogMachine = NO;
+    NSArray *logMachines = [gLogMachines allValues];
+    if (logMachines.count)
+    {
+        NSString *functionName = [NSString stringWithUTF8String:function];
+        
+        // each log machine gets the log data
+        for (id<CBTimberLogMachine> machine in logMachines)
+        {
+            if ([machine canLogWithTag:tag functionName:functionName])
+            {
+                [machine logWithMessage:message level:level tag:tag file:file function:function line:line];
+                
+                if ([machine skipDefaultLogMachine])
+                    skipDefaultLogMachine = YES;
+            }
+        }
+    }
+    
+    if ([self defaultLogMachineEnabled] && !skipDefaultLogMachine)
+        CBTLogMessage(logMessage);
+}
 
 + (void)logWithLevel:(NSUInteger)level tag:(NSString *)tag file:(const char *)file function:(const char *)function line:(int)line message:(NSString *)message, ...
 {
@@ -230,7 +342,7 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
     va_end(args);
 }
 
-+ (void)logWithLevel:(NSUInteger)level tag:(NSString *)tag file:(const char *)file function:(const char *)function line:(int)line format:(NSString *)format args:(va_list)argList
++ (void)logWithLevel:(NSUInteger)level tag:(NSString *)tag file:(const char *)file function:(const char *)function line:(int)line format:(NSString *)format args:(va_list)args
 {
     // ignored or lower levels are skipped
     if (CBTimberLogLevelIgnore == CBTLOG_LEVEL || level < CBTLOG_LEVEL)
@@ -239,13 +351,16 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
     if (![self canLogWithTag:tag function:function])
         return;
     
-    NSString *message = [[NSString alloc] initWithFormat:format arguments:argList];
-    NSString *logMessage = [self logMessageStringUsingOptionsWithMessage:message
-                                                                   level:level
-                                                                    file:file
-                                                                function:function
-                                                                    line:line];
-    CBTLogMessage(logMessage);
+    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+    
+    [self runLogMachinesWithLogMessage:message tag:tag level:level file:file function:function line:line];
+}
+
+#pragma mark - Instance
+
+- (id)init
+{
+    return nil;
 }
 
 @end
