@@ -62,7 +62,7 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
 #ifdef DEBUG
 #   define CBTLog(LVL, TAG, MSG, ...) \
     [CBTimber logWithLevel:LVL, tag:TAG file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__ message:MSG, ##__VA_ARGS__]
-#   define CBTDebugCode(BLOCK) ({ BLOCK })
+#   define CBTDebugCode(BLOCK) ({ BLOCK; })
 #else
 #   define CBTLog(LVL, TAG, MSG, ...) ;
 #   define CBTDebugCode(BLOCK) ;
@@ -143,14 +143,6 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
 + (NSString *)logTag;
 
 /**
- A boolean value indicating if the receiver will log the specified tag.
- @param tag A regular expression pattern.
- @discussion A valid value is returned once the log tag has been set.
- @return NO, if the specified tag will not be logged, otherwise YES is returned.
- */
-+ (BOOL)canLogWithTag:(NSString *)tag;
-
-/**
  Sets the log function/method name.
  @param functionName The regular expression pattern the function or method name must match to be logged (case insensitive).
  @param username The username (home folder name) of the user/dev this log tag applies to. Pass nil to ignore the username.
@@ -161,6 +153,23 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
 + (NSString *)logFunctionName;
 
 /**
+ Set to enable or disable the default log machine.
+ @discussion Usually useful when you provide one or more custom log machines.
+ */
++ (void)setDefaultLogMachineEnabled:(BOOL)enabled;
++ (BOOL)defaultLogMachineEnabled;
+
+#pragma mark Misc
+
+/**
+ A boolean value indicating if the receiver will log the specified tag.
+ @param tag A regular expression pattern.
+ @discussion A valid value is returned once the log tag has been set.
+ @return NO, if the specified tag will not be logged, otherwise YES is returned.
+ */
++ (BOOL)canLogWithTag:(NSString *)tag;
+
+/**
  A boolean value indicating if the receiver will log from the specified function/method name.
  @param name A regular expression pattern.
  @discussion A valid value is returned once the log function has been set. Otherwise YES is returned.
@@ -168,12 +177,7 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  */
 + (BOOL)canLogWithFunction:(NSString *)name;
 
-/**
- Set to enable or disable the default log machine.
- @discussion Usually useful when you provide one or more custom log machines.
- */
-+ (void)setDefaultLogMachineEnabled:(BOOL)enabled;
-+ (BOOL)defaultLogMachineEnabled;
++ (NSString *)nameForLogLevel:(CBTimberLogLevel)level;
 
 #pragma mark Logging
 
