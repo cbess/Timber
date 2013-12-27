@@ -12,6 +12,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    CBTDebugMark();
 //    [CBTimber setLogTag:@"test" forUsername:@"christopher.bess"];
 //    [CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any specified by a username
     

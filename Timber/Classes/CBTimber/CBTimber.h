@@ -12,7 +12,7 @@
  Specifies the log level.
  */
 typedef NS_ENUM(NSUInteger, CBTimberLogLevel) {
-    CBTimberLogLevelIgnore,
+    CBTimberLogLevelIgnore, // won't log anything
     CBTimberLogLevelVerbose,
     CBTimberLogLevelDebug,
     CBTimberLogLevelInfo,
@@ -54,20 +54,20 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  @discussion If set to `Info`, then `Debug` and `Verbose` will not be logged, but `Warn` and `Error` will be logged.
  */
 #ifndef CBTLOG_LEVEL
-#define CBTLOG_LEVEL CBTimberLogLevelIgnore
+#define CBTLOG_LEVEL CBTimberLogLevelVerbose
 #endif
 
 #pragma mark -
 
 #ifdef DEBUG
 #   define CBTLog(LVL, TAG, MSG, ...) \
-    [CBTimber logWithLevel:LVL, tag:TAG file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__ message:MSG, ##__VA_ARGS__]
+    [CBTimber logWithLevel:LVL tag:TAG file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__ message:MSG, ##__VA_ARGS__]
 #   define CBTDebugCode(BLOCK) ({ BLOCK; })
-#   define CBDebugMark() CBLogDebug(@"called")
+#   define CBTDebugMark() CBTLogDebug(@"called")
 #else
 #   define CBTLog(LVL, TAG, MSG, ...) ;
 #   define CBTDebugCode(BLOCK) ;
-#   define CBDebugMark() ;
+#   define CBTDebugMark() ;
 #endif
 
 #define _CBT_LOG_MSG(LVL, TAG, MSG, ...) CBTLog(CBTimberLogLevel##LVL, TAG, MSG, ##__VA_ARGS__)
