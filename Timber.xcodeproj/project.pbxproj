@@ -35,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		92058744186D0AB200E19943 /* Timber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timber.h; path = Classes/CBTimber/Timber.h; sourceTree = "<group>"; };
 		92744CD51868A1A400ABA9B7 /* Timber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92744CD81868A1A400ABA9B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		92744CDA1868A1A400ABA9B7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -161,6 +162,7 @@
 			children = (
 				92744D101868A1DD00ABA9B7 /* CBTimber.h */,
 				92744D111868A1DD00ABA9B7 /* CBTimber.m */,
+				92058744186D0AB200E19943 /* Timber.h */,
 			);
 			name = Logger;
 			sourceTree = "<group>";
@@ -479,6 +481,7 @@
 				92744D0C1868A1A500ABA9B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		92744D0D1868A1A500ABA9B7 /* Build configuration list for PBXNativeTarget "TimberTests" */ = {
 			isa = XCConfigurationList;
@@ -487,6 +490,7 @@
 				92744D0F1868A1A500ABA9B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

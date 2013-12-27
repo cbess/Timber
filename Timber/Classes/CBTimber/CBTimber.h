@@ -63,9 +63,11 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
 #   define CBTLog(LVL, TAG, MSG, ...) \
     [CBTimber logWithLevel:LVL, tag:TAG file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__ message:MSG, ##__VA_ARGS__]
 #   define CBTDebugCode(BLOCK) ({ BLOCK; })
+#   define CBDebugMark() CBLogDebug(@"called")
 #else
 #   define CBTLog(LVL, TAG, MSG, ...) ;
 #   define CBTDebugCode(BLOCK) ;
+#   define CBDebugMark() ;
 #endif
 
 #define _CBT_LOG_MSG(LVL, TAG, MSG, ...) CBTLog(CBTimberLogLevel##LVL, TAG, MSG, ##__VA_ARGS__)
