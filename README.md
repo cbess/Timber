@@ -3,6 +3,26 @@ Timber
 
 iOS and Mac app logging made easy.
 
+## Install
+
+Cocoapods: `pod 'Timber'`
+
+`#import <Timber/Timber.h>`
+
+## Usage
+	
+	- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+	{
+	    CBTDebugMark();
+		
+		[CBTimber setLogTag:@"test" forUsername:@"christopher.bess"];
+		//[CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any tags specified by a username
+		
+	    CBTLogDebugt(@"test tag", @"simple test log: %@", @7);
+	    
+	    return YES;
+	}
+
 ## Macros
 
 CBTLog(Level, Tag, Message, ...)  
