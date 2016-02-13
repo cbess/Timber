@@ -5,7 +5,7 @@ iOS and Mac app logging made easy.
 
 ## Install
 
-Cocoapods: `pod 'Timber'`
+CocoaPods: `pod 'Timber'`
 
 `#import <Timber/Timber.h>`
 
