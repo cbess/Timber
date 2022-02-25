@@ -46,6 +46,7 @@ static NSRegularExpression *gLogFunctionNameRegex = nil;
 static NSMutableDictionary *gLogMachines = nil;
 static id<CBTimberLogFormatter> gLogFormatter = nil;
 static BOOL gDefaultLogMachineEnabled = YES;
+static NSUInteger gLogLevel = CBTimberLogLevelVerbose;
 
 @implementation CBTimber
 
@@ -147,6 +148,14 @@ static BOOL gDefaultLogMachineEnabled = YES;
     }
 }
 
++ (void)setLogLevel:(CBTimberLogLevel)level {
+    gLogLevel = level;
+}
+
++ (CBTimberLogLevel)logLevel {
+    return gLogLevel;
+}
+
 #pragma mark Function filter
 
 + (NSString *)logFunctionName
@@ -201,6 +210,7 @@ static BOOL gDefaultLogMachineEnabled = YES;
     switch (level)
     {
         case CBTimberLogLevelVerbose:
+            levelName = @"verbose";
             break;
             
         case CBTimberLogLevelDebug:
@@ -344,8 +354,8 @@ static BOOL gDefaultLogMachineEnabled = YES;
 
 + (void)logWithLevel:(NSUInteger)level tag:(NSString *)tag file:(const char *)file function:(const char *)function line:(int)line format:(NSString *)format args:(va_list)args
 {
-    // ignored or lower levels are skipped
-    if (CBTimberLogLevelIgnore == CBTLOG_LEVEL || level < CBTLOG_LEVEL)
+    // ignore all, or skip lower levels
+    if (CBTimberLogLevelIgnore == gLogLevel || level < gLogLevel)
         return;
     
     if (![self canLogWithTag:tag function:function])

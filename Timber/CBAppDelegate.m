@@ -12,7 +12,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    CBTimber.logLevel = CBTimberLogLevelVerbose;
+    
     CBTDebugMark();
+    
 //    [CBTimber setLogTag:@"test" forUsername:@"christopher.bess"];
 //    [CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any specified by a username
     

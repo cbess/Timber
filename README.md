@@ -1,7 +1,7 @@
 Timber
 ======
 
-iOS and Mac app logging made easy.
+iOS and macOS app logging made easy, for the whole team.
 
 ## Install
 
@@ -12,11 +12,10 @@ Cocoapods: `pod 'Timber'`
 ## Usage
 	
 ```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     CBTDebugMark();
 	
-	[CBTimber setLogTag:@"test" forUsername:@"christopher.bess"];
+	[CBTimber setLogTag:@"test" forUsername:@"cbess"];
 	//[CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any tags specified by a username
 	
     CBTLogDebugt(@"test tag", @"simple test log: %@", @7);
@@ -24,6 +23,9 @@ Cocoapods: `pod 'Timber'`
     return YES;
 }
 ```
+
+Enable using:  
+`-D DEBUG=1` or `-D ENABLE_TIMBER=1`
 
 ## Macros
 

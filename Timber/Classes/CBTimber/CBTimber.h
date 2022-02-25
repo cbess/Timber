@@ -49,17 +49,9 @@ extern NSString *const kCBTimberLogOptionTagKey;
  */
 extern NSString *const kCBTimberLogOptionFunctionNameKey;
 
-/**
- The log level that will be logged. Logs the set level and higher.
- @discussion If set to `Info`, then `Debug` and `Verbose` will not be logged, but `Warn` and `Error` will be logged.
- */
-#ifndef CBTLOG_LEVEL
-#define CBTLOG_LEVEL CBTimberLogLevelVerbose
-#endif
-
 #pragma mark -
 
-#ifdef DEBUG
+#if DEBUG || ENABLE_TIMBER
 #   define CBTLog(LVL, TAG, MSG, ...) \
     [CBTimber logWithLevel:LVL tag:TAG file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__ message:MSG, ##__VA_ARGS__]
 #   define CBTDebugCode(BLOCK) ({ BLOCK; })
@@ -119,6 +111,27 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  @dicussion Intializing this class does nothing useful.
  */
 @interface CBTimber : NSObject
+        
+/**
+ The log level that will be logged. Logs the set level and higher.
+ @discussion If set to `Info`, then `Debug` and `Verbose` will not be logged, but `Warn` and `Error` will be logged.
+*/
+@property (nonatomic, class, assign) CBTimberLogLevel logLevel;
+
+/**
+ Determines if the default log machine should be enabled or disabled.
+ @discussion Usually useful when you provide one or more custom log machines.
+*/
+@property (nonatomic, class, assign) BOOL defaultLogMachineEnabled;
+
+/// The log function name as a regex pattern that must match to be logged. @see setLogFunctionName:forUsername:
+@property (nonatomic, class, copy) NSString *logFunctionName;
+
+/// The log tag as a regex pattern string that must match to be logged. @see setLog:forUsername:
+@property (nonatomic, class, copy) NSString *logTag;
+
+/// Use class-level properties and methods
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark Log Machines
 
@@ -130,7 +143,7 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
 
 /**
  Sets the log options.
- @disucssion Use kCBTimberLogOption* key constants.
+ @discussion Use kCBTimberLogOption* key constants.
  */
 + (void)setLogOptions:(NSDictionary *)options;
 
@@ -141,8 +154,6 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  @discussion If non-nil, it will filter the logs to only log matching tags.
  */
 + (void)setLogTag:(NSString *)tag forUsername:(NSString *)username;
-+ (void)setLogTag:(NSString *)tag;
-+ (NSString *)logTag;
 
 /**
  Sets the log function/method name.
@@ -151,15 +162,6 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  @discussion If non-nil, it will filter the logs to only log matching names.
  */
 + (void)setLogFunctionName:(NSString *)functionName forUsername:(NSString *)username;
-+ (void)setLogFunctionName:(NSString *)functionName;
-+ (NSString *)logFunctionName;
-
-/**
- Set to enable or disable the default log machine.
- @discussion Usually useful when you provide one or more custom log machines.
- */
-+ (void)setDefaultLogMachineEnabled:(BOOL)enabled;
-+ (BOOL)defaultLogMachineEnabled;
 
 #pragma mark Misc
 
@@ -179,6 +181,7 @@ extern NSString *const kCBTimberLogOptionFunctionNameKey;
  */
 + (BOOL)canLogWithFunction:(NSString *)name;
 
+/// Returns the default name for the specified log level
 + (NSString *)nameForLogLevel:(CBTimberLogLevel)level;
 
 #pragma mark Logging
