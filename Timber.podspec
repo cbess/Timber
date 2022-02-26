@@ -10,11 +10,11 @@ Pod::Spec.new do |s|
                    DESC
 
   s.ios.deployment_target = "10.0"
-  s.osx.deployment_target = "10.15"
+  s.osx.deployment_target = "10.10"
   
   s.homepage     = "https://github.com/cbess/Timber"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
-  s.author       = { "Christopher Bess" => "email@address.com" }
+  s.author       = { "C. Bess" => "email@address.com" }
 
   s.source       = { :git => "https://github.com/cbess/Timber.git", :tag => "v#{s.version}" }
   

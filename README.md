@@ -7,19 +7,19 @@ iOS and macOS app logging made easy, for the whole team.
 
 Cocoapods: `pod 'Timber'`
 
-`#import <Timber/Timber.h>`
+`#import <Timber.h>`
 
 ## Usage
-	
+
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     CBTDebugMark();
-	
-	[CBTimber setLogTag:@"test" forUsername:@"cbess"];
-	//[CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any tags specified by a username
-	
-    CBTLogDebugt(@"test tag", @"simple test log: %@", @7);
     
+    [CBTimber setLogTag:@"test" forUsername:@"cbess"];
+    //[CBTimber setLogTag:@"test one" forUsername:nil]; // overrides any tags specified by a username
+
+    CBTLogDebugt(@"test tag", @"simple test log: %@", @7);
+
     return YES;
 }
 ```
