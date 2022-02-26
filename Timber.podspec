@@ -9,6 +9,9 @@ Pod::Spec.new do |s|
                    Works on macOS and iOS platforms.
                    DESC
 
+  s.ios.deployment_target = "10.0"
+  s.osx.deployment_target = "10.15"
+  
   s.homepage     = "https://github.com/cbess/Timber"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { "Christopher Bess" => "email@address.com" }

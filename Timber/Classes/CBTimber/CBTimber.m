@@ -13,22 +13,20 @@ NSString *const kCBTimberLogOptionUsernameKey = @"log.username";
 NSString *const kCBTimberLogOptionTagKey = @"log.tag";
 NSString *const kCBTimberLogOptionFunctionNameKey = @"log.function";
 
-BOOL CBTIsCurrentUsername(NSString *username)
-{
+BOOL CBTIsCurrentUsername(NSString *username) {
 #ifndef DEBUG
     return NO;
-#endif
-    
-#if TARGET_IPHONE_SIMULATOR
+#else
+#   if TARGET_IPHONE_SIMULATOR
     NSString *path = [[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"];
     return [path hasPrefix:[@"/Users/" stringByAppendingPathComponent:username]];
-#else
+#   else
     return NO;
+#   endif
 #endif
 }
 
-void CBTLogMessage(NSString *message)
-{
+void CBTLogMessage(NSString *message) {
     static dispatch_queue_t logQueue = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
